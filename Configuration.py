@@ -9,11 +9,10 @@ import itertools
 class Configuration0:
     """A configuration of Ising spins without external sources of energy."""
     
-    def __init__(self, L, J, K, T):
+    def __init__(self, L, J, T):
         self.size = L
         self.J = J
-        self.K = K
-        self.beta = 1./ ( T)
+        self.beta = 1./ (T)
         self.spins = rnd.choice([-1,1],size = (L, L))  #create a random spin configuration
         self.energy = self._get_energy()
         self.magnetization = self._get_magentization()
@@ -26,11 +25,7 @@ class Configuration0:
         ### calculate the two-body sum
         for i,j in itertools.product(range(self.size), repeat=2):
             energ += -self.J * self.spins[i,j] * (self.spins[i,(j+1)%self.size] + self.spins[(i+1)%self.size,j]) # only consider the right and top part for each site
-        
-        ### calculate the four-body sum
-        for i,j in itertools.product(range(self.size), repeat=2):
-            energ += -self.K * self.spins[i,j] * self.spins[i,(j+1)%self.size] * self.spins[(i+1)%self.size,j] * self.spins[(i+1)%self.size, (j+1)%self.size] # only consider the right and top part for each site
-        
+
         return energ
     
     def _get_magentization(self):
