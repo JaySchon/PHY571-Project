@@ -16,17 +16,17 @@ class LocalUpdator():
     
         # compute energy difference
         coef = 2 * config.spins[i,j]
-        delta_energy = J * coef * (config.spins[i,(j+1)%self.L] + config.spins[(i+1)%self.L,j] + config.spins[i,(j-1)%self.L] + config.spins[(i-1)%self.L,j]) +\
-                        K * coef * (config.spins[i,(j+1)%self.L] * config.spins[(i+1)%self.L,(j+1)%self.L] * config.spins[(i+1)%self.L,j] + \
-                                    config.spins[i,(j+1)%self.L] * config.spins[(i-1)%self.L,(j+1)%self.L] * config.spins[(i-1)%self.L,j] + \
-                                    config.spins[i,(j-1)%self.L] * config.spins[(i-1)%self.L,(j-1)%self.L] * config.spins[(i-1)%self.L,j] + \
-                                    config.spins[i,(j-1)%self.L] * config.spins[(i+1)%self.L,(j-1)%self.L] * config.spins[(i+1)%self.L,j])
+        delta_energy = J * coef * (self.config.spins[i,(j+1)%self.L] + self.config.spins[(i+1)%self.L,j] + self.config.spins[i,(j-1)%self.L] + self.config.spins[(i-1)%self.L,j]) +\
+                        K * coef * (self.config.spins[i,(j+1)%self.L] * self.config.spins[(i+1)%self.L,(j+1)%self.L] * self.config.spins[(i+1)%self.L,j] + \
+                                    self.config.spins[i,(j+1)%self.L] * self.config.spins[(i-1)%self.L,(j+1)%self.L] * self.config.spins[(i-1)%self.L,j] + \
+                                    self.config.spins[i,(j-1)%self.L] * self.config.spins[(i-1)%self.L,(j-1)%self.L] * self.config.spins[(i-1)%self.L,j] + \
+                                    self.config.spins[i,(j-1)%self.L] * self.config.spins[(i+1)%self.L,(j-1)%self.L] * self.config.spins[(i+1)%self.L,j])
 
         # accept modification with Metropolis probability
         # if not accepted: leave configuration unchanged
         if rnd.random() < np.exp(-self.config.beta * delta_energy):
             self.config.spins[i,j] *= -1
             self.config.energy += delta_energy
-            self.config.magnetization += 2*config.spins[i,j]
+            self.config.magnetization += 2*self.config.spins[i,j]
             
         return config
