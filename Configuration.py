@@ -1,83 +1,88 @@
-### build a class for the system
+# build a class for the 2D Ising system
 
-### import libraries
+## import libraries
 import numpy as np
 import numpy.random as rnd
 import itertools
 
 
-class Configuration0:
-    """A configuration of Ising spins without external sources of energy."""
-    
-    def __init__(self, L, J, T):
-        self.size = L
-        self.J = J
-        self.beta = 1./ (T)
-        self.spins = rnd.choice([-1,1],size = (L, L))  #create a random spin configuration
-        self.energy = self._get_energy()
-        self.magnetization = self._get_magentization()
+def first_NN_interaction(spins):
+    # calculate 1st NN interaction
+    ## shift the spins matrix horizontally by one grid
+    spins_horiz_shift = np.insert(spins[:,1:], len(spins[0,:])-1, spins[:,0], axis = 1)
         
-    def _get_energy(self):
-        """Return the total energy"""
-        ### Define a function to calculate the energy of the system, given the Hamiltonian: 
-        ### H = -J sum_{<ij>} S_iS_j - K sum_{<ijkl>} S_i S_j S_k S_l
-        energ = 0
-        ### calculate the two-body sum
-        for i,j in itertools.product(range(self.size), repeat=2):
-            energ += -self.J * self.spins[i,j] * (self.spins[i,(j+1)%self.size] + self.spins[(i+1)%self.size,j]) # only consider the right and top part for each site
-
-        return energ
+    ## shift the spins matrix vertically by one grid
+    spins_vert_shift = np.insert(spins[1:,:], len(spins[:,0])-1, spins[0,:], axis = 0)
+        
+    ## calculate \Sigma_{<i,j>} S_i*S_j in the periodic lattice
+    interaction_sum = np.sum(spins * spins_horiz_shift + spins * spins_vert_shift)
+    return interaction_sum
     
-    def _get_magentization(self):
-        """Return the total magnetization"""
-        magnet = (np.sum(self.spins))
-        return magnet 
+    
+def second_NN_interaction(spins):
+    # calculate 2nd NN interaction
+    # shift the spins matrix by one grid along down right diagonal
+    spins_horiz_shift = np.insert(spins[:,1:], len(spins[0,:])-1, spins[:,0], axis = 1)
+    spins_dw_right_shift = np.insert(spins_horiz_shift[1:,:], len(spins_horiz_shift[:,0])-1, spins_horiz_shift[0,:], axis = 0)
+        
+    ## shift the spins matrix by one grid along up right diagonal
+    spins_up_right_shift = np.insert(spins_horiz_shift[:-1,:], 0, spins_horiz_shift[-1,:],axis = 0)
+        
+    interaction_sum = np.sum(spins*spins_dw_right_shift + spins*spins_up_right_shift)
+    return interaction_sum
+    
+def third_NN_interaction(spins):
+    # calculate 3rd NN interaction
+    ## shift the spins matrix by two grids horizontally
+    spins_horiz_shift = np.insert(spins[:,1:], len(spins[0,:])-1, spins[:,0], axis = 1)
+    spins_horiz_shift = np.insert(spins_horiz_shift[:,1:], len(spins_horiz_shift[0,:])-1, spins_horiz_shift[:,0], axis = 1)
+        
+    ## shift the spins matrix by two grids vertically
+    spins_vert_shift = np.insert(spins[1:,:], len(spins[:,0])-1, spins[0,:], axis = 0)
+    spins_vert_shift = np.insert(spins_vert_shift[1:,:], len(spins_vert_shift[:,0])-1, spins_vert_shift[0,:], axis = 0)
+        
+    interaction_sum = np.sum(spins*spins_horiz_shift + spins*spins_vert_shift)
+    return interaction_sum
+    
+def four_body_sum(spins):
+    """Calculate four bofy term in the periodic lattice"""
+    size = len(spins)
+    Sum = 0
+    for i,j in itertools.product(range(size), repeat=2):
+        Sum += spins[i,j] * spins[i,(j+1)%size] * spins[(i+1)%size,j] \
+                    * spins[(i+1)%size, (j+1)%size] # only consider the right and top part for each site
+    return Sum
 
 
 class Configuration:
     """A configuration of Ising spins with four-body interaction term."""
     
-    def __init__(self, L, J, K, T):
+    def __init__(self, spins, L, J, K, T):
         self.size = L
         self.J = J
         self.K = K
-        self.beta = 1./ (T)
-        self.spins = rnd.choice([-1,1],size = (L, L))  #create a random spin configuration
+        self.beta = 1./ T
+        self.spins = spins
         self.energy = self._get_energy()
         self.magnetization = self._get_magnetization()
-        
-    def get_energy_0(self):
-        """Return the two-body energy term"""
-        ### Define a function to calculate the two-body energy term of the system, given the Hamiltonian: 
-        ### H0 = -J sum_{<ij>} S_iS_j 
-        energ0 = 0
-        
-        ### calculate the two-body sum
-        for i,j in itertools.product(range(self.size), repeat=2):
-            energ0 += -self.J * self.spins[i,j] * (self.spins[i,(j+1)%self.size] + self.spins[(i+1)%self.size,j]) # only consider the right and top part for each site
-        return energ0 
-    
-    def get_energy_1(self):
-        """Return the external sources of energy term"""
+
+    def _get_energy(self):
+        ### energy calculated from the total Hamiltonian
+        # Define a function to calculate the two-body energy term of the system, given the Hamiltonian: 
+        # H0 = -J sum_{<ij>} S_iS_j 
+        energ0 = -self.J * first_NN_interaction(self.spins)
         ### Define a function to calculate the external sources of energy term of the system, given the Hamiltonian: 
         ### H1 = - K sum_{<ijkl>} S_i S_j S_k S_l
-        energ1 = 0
-        
         if self.K == 0:
-            return energ1
+            energ1 = 0
         else:
-            ### calculate the four-body sum
-            for i,j in itertools.product(range(self.size), repeat=2):
-                energ1 += -self.K * self.spins[i,j] * self.spins[i,(j+1)%self.size] * self.spins[(i+1)%self.size,j] * self.spins[(i+1)%self.size, (j+1)%self.size] # only consider the right and top part for each site
+            energ1 = -self.K * four_body_sum(self.spins)
         
-            return energ1
-    
-    def _get_energy(self):
-        energ = self.get_energy_0() + self.get_energy_1()
+        energ = energ0 + energ1
         return energ
     
     def _get_magnetization(self):
         """Return the total magnetization"""
-        magnet = (np.sum(self.spins))
+        magnet = np.sum(self.spins)
         return magnet 
         
