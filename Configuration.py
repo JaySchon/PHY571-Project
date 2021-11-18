@@ -1,6 +1,6 @@
-# build a class for the 2D Ising system
+### build a class for the system
 
-## import libraries
+### import libraries
 import numpy as np
 import numpy.random as rnd
 import itertools
@@ -53,7 +53,33 @@ def four_body_sum(spins):
                     * spins[(i+1)%size, (j+1)%size] # only consider the right and top part for each site
     return Sum
 
+def Hamiltonian(J, K, spins):
+    ### energy calculated from the total Hamiltonian
+    # Define a function to calculate the two-body energy term of the system, given the Hamiltonian: 
+    # H0 = -J sum_{<ij>} S_iS_j 
+    energ0 = -J * first_NN_interaction(self.spins)
+    ### Define a function to calculate the external sources of energy term of the system, given the Hamiltonian: 
+    ### H1 = - K sum_{<ijkl>} S_i S_j S_k S_l
+    if K == 0:
+        energ1 = 0
+    else:
+        energ1 = -K * four_body_sum(self.spins)
+        
+    energ = energ0 + energ1
+    return energ
 
+def Hamiltonian_eff_1(E1, J1, spins):
+    """Calculate first order effective Hamiltonian"""
+    return E1 - J1 * first_NN_interaction(spins)
+    
+def Hamiltonian_eff_2(E1, J1, J2, spins):
+    """Calculate second order effective Hamiltonian"""
+    return E1 - J1 * first_NN_interaction(spins) - J2 * second_NN_interaction(spins)
+
+def Hamiltonian_eff_3(E1, J1, J2, J3, spins):
+    """Calculate third order effective Hamiltonian"""
+    return E1 - J1 * first_NN_interaction(spins) - J2 * second_NN_interaction(spins) - J3 * third_NN_interaction(spins)
+    
 class Configuration:
     """A configuration of Ising spins with four-body interaction term."""
     
@@ -67,19 +93,7 @@ class Configuration:
         self.magnetization = self._get_magnetization()
 
     def _get_energy(self):
-        ### energy calculated from the total Hamiltonian
-        # Define a function to calculate the two-body energy term of the system, given the Hamiltonian: 
-        # H0 = -J sum_{<ij>} S_iS_j 
-        energ0 = -self.J * first_NN_interaction(self.spins)
-        ### Define a function to calculate the external sources of energy term of the system, given the Hamiltonian: 
-        ### H1 = - K sum_{<ijkl>} S_i S_j S_k S_l
-        if self.K == 0:
-            energ1 = 0
-        else:
-            energ1 = -self.K * four_body_sum(self.spins)
-        
-        energ = energ0 + energ1
-        return energ
+        return Hamiltonian(self.J, self.K, self.spins)
     
     def _get_magnetization(self):
         """Return the total magnetization"""
