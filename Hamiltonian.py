@@ -67,15 +67,14 @@ def Hamiltonian(J, K, spins):
     energ = energ0 + energ1
     return energ
 
-def Hamiltonian_eff_1(E1, J1, spins):
-    """Calculate first order effective Hamiltonian"""
-    return E1 - J1 * first_NN_interaction(spins)
-    
-def Hamiltonian_eff_2(E1, J1, J2, spins):
-    """Calculate second order effective Hamiltonian"""
-    return E1 - J1 * first_NN_interaction(spins) - J2 * second_NN_interaction(spins)
-
-def Hamiltonian_eff_3(E1, J1, J2, J3, spins):
-    """Calculate third order effective Hamiltonian"""
-    return E1 - J1 * first_NN_interaction(spins) - J2 * second_NN_interaction(spins) - J3 * third_NN_interaction(spins)
+def Hamiltonian_eff(eff_param, spins):
+    """Calculate effective Hamiltonian"""
+    order = len(eff_param) - 1
+    # first order effective Hamiltonian
+    if order == 1:
+        return eff_param[0] - eff_param[1] * first_NN_interaction(spins)
+    elif order == 2:
+        return eff_param[0] - eff_param[1] * first_NN_interaction(spins) - eff_param[2] * second_NN_interaction(spins)
+    elif order == 3:
+        return eff_param[0] - eff_param[1] * first_NN_interaction(spins) - eff_param[2] * second_NN_interaction(spins) - eff_param[3] * third_NN_interaction(spins)
 
