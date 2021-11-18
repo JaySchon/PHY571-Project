@@ -54,6 +54,7 @@ class SelfLearningUpdate():
             neigh.append([point[0], (point[1]+2)%self.size])
             neigh.append([(point[0]-2)%self.size, point[1]])
             neigh.append([point[0], (point[1]-2)%self.size])
+        return neigh
         
     def extend_cluster(self, point):
         for k in range(self.n):    
