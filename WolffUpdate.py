@@ -2,7 +2,7 @@
 ### import libraries
 import numpy as np
 import numpy.random as rnd
-from Configuration import four_body_sum as four_body_sum
+from Hamiltonian import four_body_sum
 
 class WolffUpdate():
     

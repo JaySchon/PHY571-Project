@@ -4,7 +4,7 @@
 # import libraries
 import numpy.random as rnd
 import numpy as np
-from Configuration import Hamiltonian, Hamiltonian_eff_1, Hamiltonian_eff_2, Hamiltonian_eff_3
+from Hamiltonian import Hamiltonian, Hamiltonian_eff_1, Hamiltonian_eff_2, Hamiltonian_eff_3
 
 class SelfLearningUpdate():
     

@@ -26,7 +26,7 @@ class LocalUpdate():
 
         # accept modification with Metropolis probability
         # if not accepted: leave configuration unchanged
-        if rnd.random() < np.exp(- self.beta * delta_energy):
+        if rnd.random() < np.exp(-self.beta * delta_energy):
             self.spins[i,j] *= -1
             
         return self.spins
