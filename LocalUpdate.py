@@ -14,12 +14,12 @@ class LocalUpdate():
         self.beta = 1./ T
          
     def local_update(self):
-        i, j = rnd.randint(L, size=(2)) # pick a random site
+        i, j = rnd.randint(self.L, size=(2)) # pick a random site
     
         # compute energy difference
-        coef = 2 * spins[i,j]
-        delta_energy = J * coef * (self.spins[i,(j+1)%self.L] + self.spins[(i+1)%self.L,j] + self.spins[i,(j-1)%self.L] + self.spins[(i-1)%self.L,j])\
-                  + K * coef * (self.spins[i,(j+1)%self.L] * self.spins[(i+1)%self.L,(j+1)%self.L] * self.spins[(i+1)%self.L,j] + \
+        coef = 2 * self.spins[i,j]
+        delta_energy = self.J * coef * (self.spins[i,(j+1)%self.L] + self.spins[(i+1)%self.L,j] + self.spins[i,(j-1)%self.L] + self.spins[(i-1)%self.L,j])\
+                  + self.K * coef * (self.spins[i,(j+1)%self.L] * self.spins[(i+1)%self.L,(j+1)%self.L] * self.spins[(i+1)%self.L,j] + \
                            self.spins[i,(j+1)%self.L] * self.spins[(i-1)%self.L,(j+1)%self.L] * self.spins[(i-1)%self.L,j] + \
                            self.spins[i,(j-1)%self.L] * self.spins[(i-1)%self.L,(j-1)%self.L] * self.spins[(i-1)%self.L,j] + \
                            self.spins[i,(j-1)%self.L] * self.spins[(i+1)%self.L,(j-1)%self.L] * self.spins[(i+1)%self.L,j])
