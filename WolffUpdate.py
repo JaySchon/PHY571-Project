@@ -26,15 +26,17 @@ class WolffUpdate():
             prob = self.activate_prob(point, neigh)
             # check if the link is activated
             if rnd.random() < prob:
-                self.cluster.append(neigh) # add point to the cluster            
+                self.cluster.append(neigh) # add point to the cluster
+            
                 self.extend_cluster(neigh) # extend the cluster from the center positioned at 'neighbour point'
             
     def extend_cluster(self, point):
+        size = len(self.spins)
         ## check if the neighbors should be added to the cluster, in anti-clockwise direction
-        self.add_site(point, [(point[0]+1)%self.size, point[1]])
-        self.add_site(point, [point[0], (point[1]+1)%self.size])
-        self.add_site(point, [(point[0]-1)%self.size, point[1]])
-        self.add_site(point, [point[0], (point[1]-1)%self.size])
+        self.add_site(point, [(point[0]+1)%size, point[1]])
+        self.add_site(point, [point[0], (point[1]+1)%size])
+        self.add_site(point, [(point[0]-1)%size, point[1]])
+        self.add_site(point, [point[0], (point[1]-1)%size])
         
     
     def Wolff_Update_0(self):
@@ -84,6 +86,7 @@ class WolffUpdate():
         # check if we keep the flip
         if rnd.random() < prob:
             return self.spins
+            
         else: 
             for site in self.cluster:
                 self.spins[site[0],site[1]] *= -1
