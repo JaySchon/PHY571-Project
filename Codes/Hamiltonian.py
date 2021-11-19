@@ -56,13 +56,13 @@ def Hamiltonian(J, K, spins):
     ### energy calculated from the total Hamiltonian
     # Define a function to calculate the two-body energy term of the system, given the Hamiltonian: 
     # H0 = -J sum_{<ij>} S_iS_j 
-    energ0 = -J * first_NN_interaction(self.spins)
+    energ0 = -J * first_NN_interaction(spins)
     ### Define a function to calculate the external sources of energy term of the system, given the Hamiltonian: 
     ### H1 = - K sum_{<ijkl>} S_i S_j S_k S_l
     if K == 0:
         energ1 = 0
     else:
-        energ1 = -K * four_body_sum(self.spins)
+        energ1 = -K * four_body_sum(spins)
         
     energ = energ0 + energ1
     return energ
