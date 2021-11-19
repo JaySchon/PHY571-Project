@@ -53,6 +53,7 @@ def four_body_sum(spins):
 
 
 def Hamiltonian(J, K, spins):
+    """Calcualte Total Hamiltonian of the system."""
     ### energy calculated from the total Hamiltonian
     # Define a function to calculate the two-body energy term of the system, given the Hamiltonian: 
     # H0 = -J sum_{<ij>} S_iS_j 

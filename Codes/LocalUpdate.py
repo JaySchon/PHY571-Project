@@ -18,8 +18,10 @@ class LocalUpdate():
     
         # compute energy difference
         coef = 2 * self.spins[i,j]
-        delta_energy = self.J * coef * (self.spins[i,(j+1)%self.L] + self.spins[(i+1)%self.L,j] + self.spins[i,(j-1)%self.L] + self.spins[(i-1)%self.L,j])\
-                  + self.K * coef * (self.spins[i,(j+1)%self.L] * self.spins[(i+1)%self.L,(j+1)%self.L] * self.spins[(i+1)%self.L,j] + \
+        delta_energy = self.J * coef * \
+                        (self.spins[i,(j+1)%self.L] + self.spins[(i+1)%self.L,j] + self.spins[i,(j-1)%self.L] + self.spins[(i-1)%self.L,j])\
+                 + self.K * coef *\
+                           (self.spins[i,(j+1)%self.L] * self.spins[(i+1)%self.L,(j+1)%self.L] * self.spins[(i+1)%self.L,j] + \
                            self.spins[i,(j+1)%self.L] * self.spins[(i-1)%self.L,(j+1)%self.L] * self.spins[(i-1)%self.L,j] + \
                            self.spins[i,(j-1)%self.L] * self.spins[(i-1)%self.L,(j-1)%self.L] * self.spins[(i-1)%self.L,j] + \
                            self.spins[i,(j-1)%self.L] * self.spins[(i+1)%self.L,(j-1)%self.L] * self.spins[(i+1)%self.L,j])

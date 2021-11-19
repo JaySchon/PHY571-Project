@@ -64,7 +64,7 @@ class WolffUpdate():
         energy_1_ini = -self.K * four_body_sum(self.spins)
         
         #randomly pick a site and add to the cluster
-        i, j = rnd.randint(L, size=(2)) 
+        i, j = rnd.randint(self.size, size=(2)) 
         self.cluster.append([i,j])
         
         #check adjacent states to build the whole cluster
