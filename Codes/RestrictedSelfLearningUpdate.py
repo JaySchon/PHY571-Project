@@ -27,11 +27,11 @@ class RestrictedSelfLearningUpdate():
         
     def Manhattan_Dist(self, site1, site2):
         """To calculate Manhattan distance between two spin states"""
-        return np.sum(np.abs(site1 - site2))
+        return np.sum(np.abs(np.array(site1) - np.array(site2)))
     
     def _is_in_cluster(self, ini_site, site):
         """To check if the site is in the restricted cluster."""
-        if self.Manhattan_Dist(ini_site, site) > self.restriction
+        if self.Manhattan_Dist(ini_site, site) > self.restriction:
             return False
         else:
             return True
@@ -47,13 +47,13 @@ class RestrictedSelfLearningUpdate():
         ### the cluster size is restricted.
         for k in range(self.n):
             for neigh in self.find_NN_neigh(point, k+1):
-                if self._is_in_cluster(ini_state, neigh) == True:
+                if self._is_in_cluster(ini_site, neigh) == True:
                     if neigh not in self.cluster:
                         prob = self.activate_prob(point, neigh, self.eff_param[k+1])
-                    # check if the link is activated
-                    if rnd.random() < prob:
-                        self.cluster.append(neigh) # add point to the cluster
-                        self.extend_cluster(neigh, ini_site) # extend the cluster from the center positioned at 'neighbour point'
+                        # check if the link is activated
+                        if rnd.random() < prob:
+                            self.cluster.append(neigh) # add point to the cluster
+                            self.extend_cluster(neigh, ini_site) # extend the cluster from the center positioned at 'neighbour point'
                 else:
                     ### add blocked pairs into the collection
                     prob = self.activate_prob(point, neigh, self.eff_param[k+1])
@@ -65,17 +65,17 @@ class RestrictedSelfLearningUpdate():
         # initiate neighbour list
         neigh = []
         if n == 1:
-            neigh.sppend([(point[0]+1)%self.size, point[1]])
+            neigh.append([(point[0]+1)%self.size, point[1]])
             neigh.append([point[0], (point[1]+1)%self.size])
             neigh.append([(point[0]-1)%self.size, point[1]])
             neigh.append([point[0], (point[1]-1)%self.size])
         elif n == 2:
-            neigh.sppend([(point[0]+1)%self.size, (point[1]+1)%self.size])
-            neigh.sppend([(point[0]-1)%self.size, (point[1]+1)%self.size])
-            neigh.sppend([(point[0]-1)%self.size, (point[1]-1)%self.size])
-            neigh.sppend([(point[0]+1)%self.size, (point[1]-1)%self.size])
+            neigh.append([(point[0]+1)%self.size, (point[1]+1)%self.size])
+            neigh.append([(point[0]-1)%self.size, (point[1]+1)%self.size])
+            neigh.append([(point[0]-1)%self.size, (point[1]-1)%self.size])
+            neigh.append([(point[0]+1)%self.size, (point[1]-1)%self.size])
         elif n == 3:
-            neigh.sppend([(point[0]+2)%self.size, point[1]])
+            neigh.append([(point[0]+2)%self.size, point[1]])
             neigh.append([point[0], (point[1]+2)%self.size])
             neigh.append([(point[0]-2)%self.size, point[1]])
             neigh.append([point[0], (point[1]-2)%self.size])
@@ -86,7 +86,7 @@ class RestrictedSelfLearningUpdate():
         for k in range(self.n):    
             ## check if the neighbors should be added to the cluster, in anti-clockwise direction
             for neigh in self.find_NN_neigh(point, k+1):
-                self.add_site(point, neigh, ini_site)
+                self.add_sites(neigh, ini_site)
   
     def Restricted_SLMC_Update(self):
         """To implement one restricted self mearning update."""
@@ -96,7 +96,7 @@ class RestrictedSelfLearningUpdate():
         E_a_eff = Hamiltonian_eff(self.eff_param, self.spins) ### note the definition of hamiltonian_eff !!!
         
         #randomly pick a site and add to the cluster
-        i, j = rnd.randint(L, size=(2)) 
+        i, j = rnd.randint(self.size, size=(2)) 
         self.cluster.append([i,j])
         
         # check adjacent states to build the whole cluster, first add 1st NN, then 2nd NN, and then 3rd NN.
@@ -117,7 +117,7 @@ class RestrictedSelfLearningUpdate():
             self.spins[site[0],site[1]] *= -1 
            
         E_b = Hamiltonian(self.J, self.K, self.spins)
-        E_b_eff = Hamiltonian_eff_1(self.eff_param[0], self.eff_param[1], self.spins) 
+        E_b_eff = Hamiltonian_eff(self.eff_param, self.spins) 
         energy_diff = (E_b - E_b_eff) - (E_a - E_a_eff)
         
         prob = np.min([1, np.exp(- self.beta * energy_diff) * Bound_coeff])
