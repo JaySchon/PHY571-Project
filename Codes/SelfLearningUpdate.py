@@ -7,7 +7,7 @@ import numpy as np
 from Hamiltonian import Hamiltonian, Hamiltonian_eff
 
 class SelfLearningUpdate():
-    
+    """A class too implement self learning update. There is no restriction in the process of building the cluster."""
     def __init__(self, spins, J, K, T, eff_param):
         self.spins = spins
         self.size = len(spins)
@@ -21,10 +21,12 @@ class SelfLearningUpdate():
         self.n = len(eff_param) - 1
         
     def activate_prob(self, point, neigh, J):
+        """To calculate the activation probability of link."""
         return 1 - np.exp(- 2 * self.beta * J * \
                                   self.spins[point[0],point[1]] * self.spins[neigh[0],neigh[1]])
     
     def add_sites(self, point):
+        """To build the cluster from the "point"."""
         ### add sites to the cluster, considering 1st NN, 2nd NN and 3rd NN
         for k in range(self.n):
             for neigh in self.find_NN_neigh(point, k+1):
@@ -36,7 +38,7 @@ class SelfLearningUpdate():
                     self.extend_cluster(neigh) # extend the cluster from the center positioned at 'neighbour point'
     
     def find_NN_neigh(self, point, n):
-        """find nth NN neighbours"""
+        """To find nth NN neighbours (up to 3)"""
         # initiate neighbour list
         neigh = []
         if n == 1:
@@ -56,13 +58,14 @@ class SelfLearningUpdate():
             neigh.append([point[0], (point[1]-2)%self.size])
         
     def extend_cluster(self, point):
+        """To extend the cluster by checking a nearest neighbours."""
         for k in range(self.n):    
             ## check if the neighbors should be added to the cluster, in anti-clockwise direction
             for neigh in self.find_NN_neigh(point, k+1):
                 self.add_site(point, neigh)
             
     def SLMC_Update(self):
-        #
+        """To implement Self Learning update, with no restriction in building the cluster."""
         
         E_a = Hamiltonian(self.J, self.K, self.spins)
         E_a_eff = Hamiltonian_eff(self.eff_param, self.spins) ### note the definition of hamiltonian_eff !!!
@@ -73,11 +76,10 @@ class SelfLearningUpdate():
         
         #check adjacent states to build the whole cluster, first add 1st NN, then 2nd NN, and then 3rd NN.
         self.add_sites([i,j])
-        #  
+        # flip the spins and calculate parameters.
         for site in self.cluster:
             self.spins[site[0],site[1]] *= -1 
         
-            
         E_b = Hamiltonian(self.J, self.K, self.spins)
         E_b_eff = Hamiltonian_eff_1(self.eff_param[0], self.eff_param[1], self.spins) 
         energy_diff = (E_b - E_b_eff) - (E_a - E_a_eff)

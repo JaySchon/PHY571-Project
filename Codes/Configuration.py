@@ -6,7 +6,7 @@ import Hamiltonian
 from Hamiltonian import Hamiltonian as Hamil
     
 class Configuration:
-    """A configuration of Ising spins with four-body interaction term."""
+    """A configuration of Ising spins with four-body interaction terms."""
     
     def __init__(self, spins, L, J, K, T):
         self.size = L
@@ -18,11 +18,11 @@ class Configuration:
         self.magnetization = self._get_magnetization()
 
     def _get_energy(self):
+        """Return the total energy."""
         return Hamil(self.J, self.K, self.spins)
     
     def _get_magnetization(self):
-        """Return the total magnetization"""
+        """Return the total magnetization."""
         magnet = np.sum(self.spins)
         return magnet 
-        
         

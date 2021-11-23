@@ -1,10 +1,17 @@
-# Calculate Hamiltonian and effective Hamiltonian
+# This file consists of functions to calculate Hamiltonian and effective Hamiltonian
+
 #import libraries
 import numpy as np
 import itertools
 
 
 def first_NN_interaction(spins):
+    """Calculate 1st NN interaction.
+    Input: 
+    spins: spins configuration matrix.
+    Output: 
+    sum of 1st nearest neighbour interactions.
+    """
     # calculate 1st NN interaction
     ## shift the spins matrix horizontally by one grid
     spins_horiz_shift = np.insert(spins[:,1:], len(spins[0,:])-1, spins[:,0], axis = 1)
@@ -18,6 +25,12 @@ def first_NN_interaction(spins):
     
     
 def second_NN_interaction(spins):
+    """Calculate 2nd NN interaction.
+    Input: 
+    spins: spins configuration matrix.
+    Output: 
+    sum of 2nd nearest neighbour interactions.
+    """
     # calculate 2nd NN interaction
     # shift the spins matrix by one grid along down right diagonal
     spins_horiz_shift = np.insert(spins[:,1:], len(spins[0,:])-1, spins[:,0], axis = 1)
@@ -30,6 +43,12 @@ def second_NN_interaction(spins):
     return interaction_sum
     
 def third_NN_interaction(spins):
+    """Calculate 3rd NN interaction.
+    Input: 
+    spins: spins configuration matrix.
+    Output: 
+    sum of 3rd nearest neighbour interactions.
+    """
     # calculate 3rd NN interaction
     ## shift the spins matrix by two grids horizontally
     spins_horiz_shift = np.insert(spins[:,1:], len(spins[0,:])-1, spins[:,0], axis = 1)
@@ -43,7 +62,12 @@ def third_NN_interaction(spins):
     return interaction_sum
     
 def four_body_sum(spins):
-    """Calculate four bofy term in the periodic lattice"""
+    """Calculate four body term in the periodic lattice
+    Input: 
+    spins: spins configuration matrix.
+    Output:
+    sum of four body terms.
+    """
     size = len(spins)
     Sum = 0
     for i,j in itertools.product(range(size), repeat=2):
@@ -53,7 +77,13 @@ def four_body_sum(spins):
 
 
 def Hamiltonian(J, K, spins):
-    """Calcualte Total Hamiltonian of the system."""
+    """Calcualte total Hamiltonian of the system.
+    Input:
+    J, K: parameters in the original Hamiltonian.
+    spins: spins configuration matrix.
+    Output:
+    Original Hamitonian of the system.
+    """
     ### energy calculated from the total Hamiltonian
     # Define a function to calculate the two-body energy term of the system, given the Hamiltonian: 
     # H0 = -J sum_{<ij>} S_iS_j 
@@ -69,7 +99,13 @@ def Hamiltonian(J, K, spins):
     return energ
 
 def Hamiltonian_eff(eff_param, spins):
-    """Calculate effective Hamiltonian"""
+    """Calculate effective Hamiltonian, given the effective parameters and spins configuration matrix.
+    Input: 
+    eff_param: effective parameters trained in SLMC method;
+    spins: spins configuration matrix.
+    Output:
+    Effective Hamiltonian of the system.
+    """
     order = len(eff_param) - 1
     # first order effective Hamiltonian
     if order == 1:

@@ -1,5 +1,5 @@
-# Implement Self-Learning Update Method with effective Hamiltonian and Wolff update algotithm
-# add restriction of cluster size defined by Manhattan Distance
+# This file is to implement Self-Learning Update Method with effective Hamiltonian and Wolff update algotithm
+# Add restriction of cluster size defined by Manhattan Distance
 
 # import libraries
 import numpy.random as rnd
@@ -7,7 +7,7 @@ import numpy as np
 from Hamiltonian import Hamiltonian, Hamiltonian_eff
 
 class RestrictedSelfLearningUpdate():
-    
+    """A class to implement restrcited self learning update method."""
     def __init__(self, spins, J, K, T, eff_param, restriction):
         ## restriction is a finite number, it gives the size restriction of the cluster
         self.spins = spins
@@ -26,20 +26,23 @@ class RestrictedSelfLearningUpdate():
         self.restriction = restriction
         
     def Manhattan_Dist(self, site1, site2):
-        """Calculate Manhattan distance between two spin states"""
+        """To calculate Manhattan distance between two spin states"""
         return np.sum(np.abs(site1 - site2))
     
     def _is_in_cluster(self, ini_site, site):
+        """To check if the site is in the restricted cluster."""
         if self.Manhattan_Dist(ini_site, site) > self.restriction
             return False
         else:
             return True
     
     def activate_prob(self, point, neigh, J):
+        """To calculate the activate probavility of the link."""
         return 1 - np.exp(- 2 * self.beta * J * \
                                   self.spins[point[0],point[1]] * self.spins[neigh[0],neigh[1]])
     
     def add_sites(self, point, ini_site):
+        """To build the cluster from "point"."""
         ### add sites to the cluster, considering 1st NN, 2nd NN and 3rd NN.
         ### the cluster size is restricted.
         for k in range(self.n):
@@ -58,7 +61,7 @@ class RestrictedSelfLearningUpdate():
                         self.restricted_collection[k].append((point, neigh))
                         
     def find_NN_neigh(self, point, n):
-        """find nth NN neighbours"""
+        """To find nth NN neighbours"""
         # initiate neighbour list
         neigh = []
         if n == 1:
@@ -79,12 +82,14 @@ class RestrictedSelfLearningUpdate():
         return neigh
     
     def extend_cluster(self, point, ini_site):
+        """To extend the cluster by checking a nearest neighbours"""
         for k in range(self.n):    
             ## check if the neighbors should be added to the cluster, in anti-clockwise direction
             for neigh in self.find_NN_neigh(point, k+1):
                 self.add_site(point, neigh, ini_site)
   
     def Restricted_SLMC_Update(self):
+        """To implement one restricted self mearning update."""
         ### restricted self learning update
         
         E_a = Hamiltonian(self.J, self.K, self.spins)

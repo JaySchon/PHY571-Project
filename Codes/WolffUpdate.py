@@ -1,12 +1,14 @@
-### Wolff update algorithm
+# This file implement Wolff update algorithm for the system with original Hamiltonian
+
 ### import libraries
 import numpy as np
 import numpy.random as rnd
 from Hamiltonian import four_body_sum
 
 class WolffUpdate():
-    
+    """A class to implememnt Wolff update method."""
     def __init__(self, spins, J, K, T):
+        """Initiate parameters"""
         self.spins = spins
         self.size = len(spins)
         self.cluster = []
@@ -16,11 +18,12 @@ class WolffUpdate():
         self.beta = 1./ T
         
     def activate_prob(self, point, neigh):
+        """Calculate the actiavation probability of the link."""
         return 1 - np.exp(- 2 * self.beta * self.J * \
                                   self.spins[point[0],point[1]] * self.spins[neigh[0],neigh[1]])
     
     def add_site(self, point, neigh):
-        ### add sites to the cluster (1st NN)
+        """Add sites to the cluster (1st NN)"""
         
         if neigh not in self.cluster:
             prob = self.activate_prob(point, neigh)
@@ -31,6 +34,7 @@ class WolffUpdate():
                 self.extend_cluster(neigh) # extend the cluster from the center positioned at 'neighbour point'
             
     def extend_cluster(self, point):
+        """To extend the cluster by checking all the nearest neighbours."""
         size = len(self.spins)
         ## check if the neighbors should be added to the cluster, in anti-clockwise direction
         self.add_site(point, [(point[0]+1)%size, point[1]])
@@ -40,6 +44,12 @@ class WolffUpdate():
         
     
     def Wolff_Update_0(self):
+        """
+        To implement Wolff Update for the System with Hamiltonian: H = -J \sum_{<i,j>}S_i*S_j
+        Output:
+        the spins configuration matrix after one Wolff update.
+        """
+        
         ### Build the cluster and flip it with probability one 
         
         #randomly pick a site and add to the cluster
@@ -59,6 +69,12 @@ class WolffUpdate():
         
         
     def Wolff_Update_1(self):
+        """
+        To implement Wolff Update for the System with original Hamiltonian.
+        Output:
+        the spins configuration matrix after one Wolff update.
+        """
+        
         ### build the cluster and flip it with probability relevant to external sources 
        
         energy_1_ini = -self.K * four_body_sum(self.spins)
