@@ -90,27 +90,20 @@ def train_eff_Hamil(samples, n):
     eff_param = np.append(reg.intercept_, -coef)
     return eff_param
 
-class SLprocess():
-    def __init__(self, L, J, K):
-        self.L = L
-        self.K = K
-        self.J = J
-        self.eff_param = []
-
-    def eff_paramLocal(self, T, n, Nsamples, Nsteps):
+def eff_paramLocal(L, J, K, T, n, Nsamples, Nsteps):
         # T > Tc, train some samples using Local Update Method, T = 5
-        samples = Make_Samples_Local(self.L, self.J, self.K, T, Nsamples, Nsteps)
-        print(samples)
-        self.eff_param = train_eff_Hamil(samples, n)
-        print(self.eff_param)
-        return self.eff_param
+    samples = Make_Samples_Local(L, J, K, T, Nsamples, Nsteps)
+    print(samples)
+    eff_param = train_eff_Hamil(samples, n)
+    print(eff_param)
+    return eff_param
 
-    def Optimizing(self, T, Nsamples, Nsteps, n):
-        # Set iteration step
-        Iter = 5  # modified later
-        for k in range(Iter):
-            samples = Make_Samples_SelfLearning(self.L, self.J, self.K, T, Nsamples, Nsteps, self.eff_param)
-            self.eff_param = train_eff_Hamil(samples, n)
-            print(self.eff_param)
+def Optimizing(L, J, K, T, Nsamples, Nsteps, n, eff_param):
+    # Set iteration step
+    Iter = 5  # modified later
+    for k in range(Iter):
+        samples = Make_Samples_SelfLearning(L, J, K, T, Nsamples, Nsteps, eff_param)
+        eff_param = train_eff_Hamil(samples, n)
+        print(eff_param)
 
-        return self.eff_param
+    return eff_param
