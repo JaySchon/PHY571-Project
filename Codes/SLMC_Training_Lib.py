@@ -1,10 +1,13 @@
+# This file conists of the functions which are used in SLMC training.
+
 import numpy as np
 import numpy.random as rnd
+from sklearn import linear_model
 from Configuration import Configuration
 from Hamiltonian import first_NN_interaction, second_NN_interaction, third_NN_interaction
 from LocalUpdate import LocalUpdate
 from SelfLearningUpdate import SelfLearningUpdate
-from sklearn import linear_model
+
 
 def Make_Samples_Local(size, J, K, T, Nsamples, Nsteps):
     """Generate samples from Local Update Method.
@@ -69,6 +72,7 @@ def Make_Samples_SelfLearning(size, J, K, T, Nsamples, Nsteps, eff_param):
         print("Sample %.0f: %.2f percent done."%(n+1, 100*(n+1)/Nsamples))
     return samples
 
+
 def train_eff_Hamil(samples, n):
     """Train effective Hamiltonian from the samples.
     Input parameters:
@@ -90,20 +94,29 @@ def train_eff_Hamil(samples, n):
     eff_param = np.append(reg.intercept_, -coef)
     return eff_param
 
-def eff_paramLocal(L, J, K, T, n, Nsamples, Nsteps):
-        # T > Tc, train some samples using Local Update Method, T = 5
-    samples = Make_Samples_Local(L, J, K, T, Nsamples, Nsteps)
-    print(samples)
-    eff_param = train_eff_Hamil(samples, n)
-    print(eff_param)
-    return eff_param
 
-def Optimizing(L, J, K, T, Nsamples, Nsteps, n, eff_param):
-    # Set iteration step
-    Iter = 5  # modified later
+def self_optimization(Iter, size, J, K, T, Nsamples, Nsteps, eff_param):
+    """
+    To complete the self optimization procedure in the self-learning Monte Carlo.
+    Input: 
+    Iter: the number of iteration steps to optimize effective Hamiltonian;
+    size: size of the lattice;
+    J, K: parameters of the Hamiltonian;
+    T: temperature;
+    Nsamples: the number of the samples;
+    Nstep: steps taken in MC simulation to reach equilibrium;
+    eff_param: effective Hamiltonian obtained from local update monte carlo at T > Tc.
+    Output: 
+    optimized parameters of effective Hamiltonian.
+    """
+    # the order of interactions in effective Hamiltonian
+    n = len(eff_param) - 1
+    
     for k in range(Iter):
-        samples = Make_Samples_SelfLearning(L, J, K, T, Nsamples, Nsteps, eff_param)
+        # for every iteration,
+        # create Nsamples samples with the eff_param obtained from the last step
+        samples = Make_Samples_SelfLearning(size, J, K, T, Nsamples, Nsteps, eff_param)
+        # use the samples to train new eff_param
         eff_param = train_eff_Hamil(samples, n)
-        print(eff_param)
 
     return eff_param
