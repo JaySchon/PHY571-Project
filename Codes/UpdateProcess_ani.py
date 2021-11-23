@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from Configuration import Configuration
 from WolffUpdate import WolffUpdate
 from LocalUpdate import LocalUpdate
+from SelfLearningUpdate import SelfLearningUpdate
 import matplotlib.animation as animation
 import itertools
 
@@ -11,9 +12,10 @@ L = 25
 J = 1.
 K = 0.2
 T = 2.1
-n_cycles = 1000
-type = 0
-Ncycle = L**2
+n_cycles = 1000    # cycles shown
+type = 0     # local update type = 0; global update type =1; SLMC update type = 2
+Ncycle = L**2     # local updates in one cycle
+eff_param = [-100, 1.1]     # Heff parameters
 
 
 def config_to_image(spins):
@@ -61,6 +63,9 @@ def do_mc_cycle(n):
         update = LocalUpdate(config.spins, J, K, T)
         for i in range(Ncycle-1): update.local_update()
         spins = update.local_update()
+    if type == 2:
+        update = SelfLearningUpdate(config.spins, J, K, T, eff_param)
+        spins = update.SLMC_Update()
     config = Configuration(spins, L, J, K, T)
     steps.append(n)
     mr.append(abs(config.magnetization)/L**2)
