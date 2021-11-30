@@ -152,6 +152,7 @@ def self_optimization(Iter, size, J, K, T, Nsamples, Nsteps, eff_param):
         # use the samples to train new eff_param
         eff_param = train_eff_Hamil(samples, n)
         print('Iteration %.0f, %.2f percent done.'%(k+1, 100*(k+1)/Iter))
+        print('eff_param is:', eff_param)
     return eff_param
 
 
@@ -180,4 +181,5 @@ def restricted_self_optimization(Iter, size, J, K, T, Nsamples, Nsteps, eff_para
         # use the samples to train new eff_param
         eff_param = train_eff_Hamil(samples, n)
         print('Iteration %.0f, %.2f percent done.'%(k+1, 100*(k+1)/Iter))
+        print('eff_param is', eff_param)
     return eff_param
