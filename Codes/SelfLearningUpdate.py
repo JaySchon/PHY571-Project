@@ -57,12 +57,21 @@ class SelfLearningUpdate():
             neigh.append([(point[0]-2)%self.size, point[1]])
             neigh.append([point[0], (point[1]-2)%self.size])
         return neigh
+    
+    #def extend_cluster(self, point):
+    #    """To extend the cluster by checking a nearest neighbours."""
+    #    for k in range(self.n):    
+    #        ## check if the neighbors should be added to the cluster, in anti-clockwise direction
+    #       for neigh in self.find_NN_neigh(point, k+1):
+    #            self.add_sites(neigh)
             
     def SLMC_Update(self):
         """To implement Self Learning update, with no restriction in building the cluster."""
         
         E_a = Hamiltonian(self.J, self.K, self.spins)
+        #print('E_a:',E_a)
         E_a_eff = Hamiltonian_eff(self.eff_param, self.spins) ### note the definition of hamiltonian_eff !!!
+        #print('E_a_eff',E_a_eff)
         #randomly pick a site and add to the cluster
         i, j = rnd.randint(self.size, size=(2)) 
         self.cluster.append([i,j])
@@ -74,14 +83,20 @@ class SelfLearningUpdate():
             self.spins[site[0],site[1]] *= -1 
         
         E_b = Hamiltonian(self.J, self.K, self.spins)
+        #print('E_b:',E_b)
         E_b_eff = Hamiltonian_eff(self.eff_param, self.spins) 
+        #print('E_b_eff',E_b_eff)
         energy_diff = (E_b - E_b_eff) - (E_a - E_a_eff)
+        #print('energy_diff:',energy_diff)
         prob = np.min([1, np.exp(- self.beta * energy_diff)])
+        #print('prob:',prob)
         # check if we keep the flip
         if rnd.random() < prob:
+            #print('flip')
             return self.spins
             
         else: 
             for site in self.cluster:
                 self.spins[site[0],site[1]] *= -1
+            #print('no flip')
             return self.spins

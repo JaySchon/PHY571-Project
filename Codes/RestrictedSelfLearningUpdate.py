@@ -57,10 +57,7 @@ class RestrictedSelfLearningUpdate():
                             self.cluster.append(neigh) # add point to the cluster
                             self.add_sites(neigh, ini_site) # extend the cluster from the center positioned at 'neighbour point'
                 else:
-                    ### add blocked pairs into the collection
-                    prob = self.activate_prob(point, neigh, self.eff_param[k+1])
-                    if prob > 0:
-                        self.restricted_collection[k].append((point, neigh))
+                    self.restricted_collection[k].append((point, neigh))
                         
     def find_NN_neigh(self, point, n):
         """To find nth NN neighbours"""
@@ -82,6 +79,13 @@ class RestrictedSelfLearningUpdate():
             neigh.append([(point[0]-2)%self.size, point[1]])
             neigh.append([point[0], (point[1]-2)%self.size])
         return neigh
+    
+    #def extend_cluster(self, point, ini_site):
+    #    """To extend the cluster by checking a nearest neighbours"""
+    #    for k in range(self.n):    
+    #        ## check if the neighbors should be added to the cluster, in anti-clockwise direction
+    #        for neigh in self.find_NN_neigh(point, k+1):
+    #           self.add_sites(neigh, ini_site)
   
     def Restricted_SLMC_Update(self):
         """To implement one restricted self mearning update."""
@@ -89,6 +93,8 @@ class RestrictedSelfLearningUpdate():
         
         E_a = Hamiltonian(self.J, self.K, self.spins)
         E_a_eff = Hamiltonian_eff(self.eff_param, self.spins) ### note the definition of hamiltonian_eff !!!
+        #print('E_a:',E_a)
+        #print('E_a_eff:',E_a_eff)
         #randomly pick a site and add to the cluster
         i, j = rnd.randint(self.size, size=(2)) 
         self.cluster.append([i,j])
@@ -104,22 +110,31 @@ class RestrictedSelfLearningUpdate():
             Sum = 0
             for (site1, site2) in self.restricted_collection[k]:
                 Sum += self.spins[site1[0],site1[1]] * self.spins[site2[0],site2[1]]
-            Bound_coeff *= np.exp(2* self.beta * self.eff_param[k+1] * Sum)
+            #print('Sum:',Sum)
+            Bound_coeff *= np.exp(-2* self.beta * self.eff_param[k+1] * Sum)
+        #print('Bound_coeff:', Bound_coeff)
+        
         # flip the cluster and calculate energy difference
         for site in self.cluster:
             self.spins[site[0],site[1]] *= -1 
            
         E_b = Hamiltonian(self.J, self.K, self.spins)
+        #print('E_b:',E_b)
         E_b_eff = Hamiltonian_eff(self.eff_param, self.spins) 
+        #print('E_b_eff:',E_b_eff)
         energy_diff = (E_b - E_b_eff) - (E_a - E_a_eff)
+        #print('energy_diff:',energy_diff)
         prob = np.min([1, np.exp(- self.beta * energy_diff) * Bound_coeff])
+        #print('prob:',prob)
         # check if we keep the flip
         if rnd.random() < prob:
+            #print('flip')
             return self.spins 
             
         else: 
             for site in self.cluster:
                 self.spins[site[0],site[1]] *= -1
+            #print('no flip')
             return self.spins
             
             
