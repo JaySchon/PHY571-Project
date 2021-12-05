@@ -79,13 +79,6 @@ class RestrictedSelfLearningUpdate():
             neigh.append([(point[0]-2)%self.size, point[1]])
             neigh.append([point[0], (point[1]-2)%self.size])
         return neigh
-    
-    #def extend_cluster(self, point, ini_site):
-    #    """To extend the cluster by checking a nearest neighbours"""
-    #    for k in range(self.n):    
-    #        ## check if the neighbors should be added to the cluster, in anti-clockwise direction
-    #        for neigh in self.find_NN_neigh(point, k+1):
-    #           self.add_sites(neigh, ini_site)
   
     def Restricted_SLMC_Update(self):
         """To implement one restricted self mearning update."""
