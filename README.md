@@ -18,7 +18,7 @@ Reproduce the results by referring to the paper  [Self-Learning Monte Carlo Meth
 (7) SLMC_Training_Lib.py: A function file which will be used in the SLMC/RSLMC training process, including making samples, self-optimizing, etc.
 ```
 
-The four update class will take spins configuration as an input parameter, and return the spins configuration after one update.
+The four update classes will take spins configuration as an input parameter, and return the spins configuration after one update.
 
 * In the testing folder, one will find some sub-folders which aims to realize one specific calculation task. Plotting and production files are strictly separated.
 * In the data folder, calculation results (including plot files and maybe data files) are presented in this folder.
