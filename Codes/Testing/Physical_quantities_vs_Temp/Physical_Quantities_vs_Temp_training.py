@@ -47,7 +47,7 @@ for L in size:
                 config = Configuration(spins, L, J, K, T)
                 av_e  += config.energy
                 av_e2 += config.energy**2
-                av_m  += config.magnetization
+                av_m  += abs(config.magnetization)
                 av_m2 += config.magnetization**2
             
         # normalize averages
@@ -111,7 +111,7 @@ for L in size:
                 config = Configuration(spins, L, J, K, T)
                 av_e  += config.energy
                 av_e2 += config.energy**2
-                av_m  += config.magnetization
+                av_m  += abs(config.magnetization)
                 av_m2 += config.magnetization**2
             
         # normalize averages
