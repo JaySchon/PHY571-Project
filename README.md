@@ -29,7 +29,7 @@ The four update class will take spins configuration as an input parameter, and r
 
 To calculate how the physical quantities (which we are interested in, including energy, magnetization, specific heat capacity and susceptibility) vary with temperature using Local Update method and Wolff cluster Update method.  
 
-The definition of specific heat capacity is $$C_v = \beta N(\left<m^2\right>-\left<|m|\right>^2)$$, while the definition of susceptibility is $\chi = k_B \beta^2 N(\left<e^2\right>-\left<e\right>^2)$. In all the calculation, we set $k_B = 1$.
+The definition of specific heat capacity is $C_v = \beta N(\left<m^2\right>-\left<|m|\right>^2)$, while the definition of susceptibility is $\chi = k_B \beta^2 N(\left<e^2\right>-\left<e\right>^2)$. In all the calculation, we set $k_B = 1$.
 
 To run the file and get calculation results, one should put Physical_Quantities_vs_Temp_plotting.py and Physical_Quantities_vs_Temp_training.py in the codes folder and use the command:
 
