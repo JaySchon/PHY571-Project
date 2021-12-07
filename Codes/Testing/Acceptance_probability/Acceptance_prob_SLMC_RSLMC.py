@@ -1,14 +1,14 @@
 # This file is to calculate the flipping probability when constructing the cluster in SLMC and RSLMC method.
 
 ################################ Output Reminder #######################################
-#                                                          #  
-#      Calculated result will be printed and displayed in your terminal;         #
-#          You must save those output result by yourself !                 #
-#               Otherwise you will lose them !                       #
-#         In Linux system, you can use "tee" command to save them;            #
+#                                                                                      #  
+#      Calculated result will be printed and displayed in your terminal;               #
+#          You must save those output result by yourself !                             #
+#               Otherwise you will lose them !                                         #
+#         In Linux system, you can use "tee" command to save them;                     #
 # For example, run with ">> python SLMC_Training_Ensemble_Average.py |tee result.txt"  #
-# Correspondingly, you can find solutions in other systems to save printed results.   #
-#     Note: Data dealing script is not uploaded, you can write it by yourself.     #
+# Correspondingly, you can find solutions in other systems to save printed results.    #
+#     Note: Data dealing script is not uploaded, you can write it by yourself.         #
 ########################################################################################
 
 #import libraries
