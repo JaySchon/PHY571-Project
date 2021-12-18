@@ -21,7 +21,8 @@ Reproduce the results by referring to the paper  [Self-Learning Monte Carlo Meth
 The four update classes will take spins configuration as an input parameter, and return the spins configuration after one update.
 
 * In the testing folder, one will find some sub-folders which aims to realize one specific calculation task. Plotting and production files are strictly separated.
-* In the data folder, calculation results (including plot files and maybe data files) are presented in this folder.
+* In the data folder, calculation results (including plot files and maybe data files) are presented.
+* In the report folder, presentation ppt and project project are uploaded (PDF version) with two animations.
 
 ### Calculation Functions
 
